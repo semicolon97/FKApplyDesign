@@ -23,7 +23,7 @@ public class Game {
         System.out.println("enter number of Players");
         int noOfPlayers = sc.nextInt();
 
-        ArrayList<Player> listOfPlayers = new ArrayList<>(noOfPlayers);
+        Player[] listOfPlayers = new Player[noOfPlayers];
 
         System.out.println("For Each Player, Enter H for human and M for Machine");
         int playerId = 0;
@@ -36,14 +36,14 @@ public class Game {
             if (choice.equals("H")) {
                 tempHuman = new Human();
                 tempHuman.setPlayerId(playerId);
+                listOfPlayers[playerId] = tempHuman;
                 playerId++;
-                listOfPlayers.add(tempHuman);
             }
             else if (choice.equals("M")) {
                 tempMachine = new Machine();
                 tempMachine.setPlayerId(playerId);
+                listOfPlayers[playerId] = tempMachine;
                 playerId++;
-                listOfPlayers.add(tempMachine);
             }
             else {
                 System.out.println("Invalid Choice, please enter again");
