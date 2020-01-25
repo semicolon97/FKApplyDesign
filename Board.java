@@ -26,4 +26,17 @@ public class Board {
             }
         }
     }
+
+    int makeMove(int player, int x, int y) {
+        if (x<0||x>=row_size||y<0||y>=col_size) {
+            return -1;
+        }
+        else if (board[x][y] != -1) {
+            return 0;
+        }
+        else {
+            board[x][y]=player;
+            return 1;
+        }
+    }
 }
