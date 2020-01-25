@@ -3,7 +3,7 @@ package FKApplyDesign;
 import java.util.Scanner;
 import java.util.Random;
 
-public abstract class Player {
+abstract class Player {
     private int playerId;
 
     int getPlayerId() {
