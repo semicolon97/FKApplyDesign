@@ -287,6 +287,13 @@ public class Game {
         }
     }
 
+    void showLeaderBoard(ArrayList<Integer> leaderboard, int gameNo) {
+        System.out.println("The Leaderboard is : ");
+        for (int i=0;i<gameNo;i++) {
+            System.out.println("The Game No. "+(i+1)+" won by : "+leaderboard.get(i));
+        }
+    }
+
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
@@ -369,12 +376,11 @@ public class Game {
 
             System.out.println("To Continue Playing Type Y");
             continuePlaying = sc.nextLine();
-        }
-
-        System.out.println("The Leaderboard : ");
-
-        for (int i=0;i<gameNo;i++) {
-            System.out.println("The Winner of Game "+ (i+1)+ " was "+ leaderboard.get(i));
+            System.out.println("Enter L to see leadeboard");
+            choice = sc.nextLine();
+            if (choice.equals("L")) {
+                newGame.showLeaderBoard(leaderboard, gameNo);
+            }
         }
     }
 }
