@@ -111,6 +111,51 @@ public class Game {
         }
     }
 
+    void playGame( Board gameBoard, Player[] listOfPlayers, int rowSize, int colSize) {
+        int noOfValidMoves = rowSize * colSize;
+        int noOfMovesdone = 0;
+        int whoseTurn = 0;
+        int moveX;
+        int moveY;
+        int noOfPlayers = listOfPlayers.length;
+        Player whoMoves = listOfPlayers[whoseTurn];
+
+        while(gameOver(gameBoard,rowSize,colSize) == false && noOfMovesdone < noOfValidMoves) {
+            moveX = whoMoves.rowMove(rowSize);
+            moveY = whoMoves.colMove(colSize);
+
+            while(whoMoves.wantUndo()) {
+                System.out.println("Replay your move");
+                moveX = whoMoves.rowMove(rowSize);
+                moveY = whoMoves.colMove(colSize);
+            }
+
+            while(gameBoard.makeMove(whoseTurn, moveX, moveY) != 1) {
+                moveX = whoMoves.rowMove(rowSize);
+                moveY = whoMoves.colMove(colSize);
+            }
+            whoseTurn = (whoseTurn+1)%noOfPlayers;
+            whoMoves = listOfPlayers[whoseTurn];
+            noOfMovesdone++;
+
+            showBoard(gameBoard);
+        }
+
+        if (gameOver(gameBoard,rowSize,colSize) == false && noOfMovesdone == noOfValidMoves) {
+            System.out.println("Game is a draw");
+        }
+        else {
+            if (whoseTurn == 0) {
+                whoseTurn = noOfPlayers - 1;
+            }
+            else {
+                whoseTurn = (whoseTurn - 1) % noOfPlayers;
+            }
+            System.out.println("The Winner is Player "+whoseTurn);
+        }
+    }
+
+
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
@@ -161,39 +206,6 @@ public class Game {
         }
 
 
-        int noOfValidMoves = rowSize * colSize;
-        int noOfMovesdone = 0;
-        int whoseTurn = 0;
-        int moveX;
-        int moveY;
-        Player whoMoves = listOfPlayers[whoseTurn];
-
-        while(newGame.gameOver(gameBoard,rowSize,colSize) == false && noOfMovesdone < noOfValidMoves) {
-            moveX = whoMoves.rowMove(rowSize);
-            moveY = whoMoves.colMove(colSize);
-
-            while(gameBoard.makeMove(whoseTurn, moveX, moveY) != 1) {
-                moveX = whoMoves.rowMove(rowSize);
-                moveY = whoMoves.colMove(colSize);
-            }
-            whoseTurn = (whoseTurn+1)%noOfPlayers;
-            whoMoves = listOfPlayers[whoseTurn];
-            noOfMovesdone++;
-
-            newGame.showBoard(gameBoard);
-        }
-
-        if (newGame.gameOver(gameBoard,rowSize,colSize) == false && noOfMovesdone == noOfValidMoves) {
-            System.out.println("Game is a draw");
-        }
-        else {
-            if (whoseTurn == 0) {
-                whoseTurn = noOfPlayers - 1;
-            }
-            else {
-                whoseTurn = (whoseTurn - 1) % noOfPlayers;
-            }
-            System.out.println("The Winner is Player "+whoseTurn);
-        }
+        newGame.playGame(gameBoard, listOfPlayers, rowSize, colSize );
     }
 }
