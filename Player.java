@@ -16,6 +16,7 @@ abstract class Player {
 
     abstract int rowMove(int rowSize);
     abstract int colMove(int colSize);
+    abstract boolean wantUndo();
 }
 
 
@@ -34,6 +35,24 @@ class Human extends Player {
         int colNo = sc.nextInt();
         return colNo;
     }
+
+
+    boolean wantUndo() {
+        System.out.println("Enter Y if you want to undo your previous move, else enter N");
+        String choice;
+        Scanner sc = new Scanner(System.in);
+        choice = sc.nextLine();
+        if (choice.equals("Y")) {
+            return true;
+        }
+        else if (choice.equals("N")) {
+            return false;
+        }
+        else {
+            System.out.println("Invalid choice, assuming no undo");
+            return false;
+        }
+    }
 }
 
 
@@ -49,5 +68,9 @@ class Machine extends Player {
         Random rd = new Random();
         int colNo = rd.nextInt(colSize);
         return colNo;
+    }
+
+    boolean wantUndo() {
+        return false;
     }
 }
