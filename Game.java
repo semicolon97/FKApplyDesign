@@ -2,8 +2,25 @@ package FKApplyDesign;
 
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
 public class Game {
+
+    Map<Integer, ArrayList<Board> > gameState = new HashMap<>();
+
+    void setGameState(int gameN, Board game)  {
+
+        Integer gameNo = new Integer(gameN);
+        if (gameState.containsKey(gameNo)) {
+            gameState.get(gameNo).add(game);
+        }
+        else {
+            ArrayList<Board> temp = new ArrayList<>();
+            temp.add(game);
+            gameState.put(gameNo, temp);
+        }
+    }
 
     boolean newRowCrossed(int [][] winners, int rowSize, int colSize) {
         int initialLoc, flag = 1;
@@ -200,9 +217,11 @@ public class Game {
             }
             System.out.println();
         }
+
+        System.out.println("____");
     }
 
-    int playGame( Board gameBoard, Player[] listOfPlayers, int rowSize, int colSize) {
+    int playGame(int gameNo, Board gameBoard, Player[] listOfPlayers, int rowSize, int colSize) {
         int noOfValidMoves = rowSize * colSize;
         int noOfMovesdone = 0;
         int whoseTurn = 0;
@@ -225,6 +244,8 @@ public class Game {
                 moveX = whoMoves.rowMove(rowSize);
                 moveY = whoMoves.colMove(colSize);
             }
+
+            setGameState(gameNo, gameBoard);
             whoseTurn = (whoseTurn+1)%noOfPlayers;
             whoMoves = listOfPlayers[whoseTurn];
             noOfMovesdone++;
@@ -251,7 +272,7 @@ public class Game {
 
     }
 
-    int playEnhancedGame(Player[] listOfPlayers, int rowSize, int colSize, int boardSize) {
+    int playEnhancedGame(int gameNo, Player[] listOfPlayers, int rowSize, int colSize, int boardSize) {
         int tempWinner;
 
         if (boardSize == rowSize) {
@@ -262,7 +283,7 @@ public class Game {
 
             gameBoard.initializeBoard();
 
-            tempWinner = playGame(gameBoard, listOfPlayers, rowSize, colSize);
+            tempWinner = playGame(gameNo, gameBoard, listOfPlayers, rowSize, colSize);
 
             return tempWinner;
         }
@@ -276,7 +297,7 @@ public class Game {
             }
             for (int i=0;i<rowSize;i++) {
                 for (int j=0;j<colSize;j++) {
-                    winners[i][j] = playEnhancedGame(listOfPlayers, rowSize, colSize, boardSize/rowSize);
+                    winners[i][j] = playEnhancedGame(gameNo, listOfPlayers, rowSize, colSize, boardSize/rowSize);
                     if (newRowCrossed(winners, rowSize, colSize) || newColCrossed(winners, rowSize, colSize) || newDiagonalCrossed(winners, rowSize, colSize)) {
                         return winners[i][j];
                     }
@@ -358,7 +379,7 @@ public class Game {
                 System.out.println("Enter the board size in terms of power of row or column size");
                 int boardSize = sc.nextInt();
 
-                winner = newGame.playEnhancedGame(listOfPlayers, rowSize, colSize, boardSize);
+                winner = newGame.playEnhancedGame(gameNo, listOfPlayers, rowSize, colSize, boardSize);
                 if (winner == -1) {
                     System.out.println("The Game is a draw");
                 }
@@ -368,7 +389,7 @@ public class Game {
                 choice = sc.nextLine();
             }
             else {
-                winner = newGame.playGame(gameBoard, listOfPlayers, rowSize, colSize );
+                winner = newGame.playGame(gameNo, gameBoard, listOfPlayers, rowSize, colSize );
             }
 
             leaderboard.add(winner);
@@ -381,6 +402,22 @@ public class Game {
             if (choice.equals("L")) {
                 newGame.showLeaderBoard(leaderboard, gameNo);
             }
+        }
+
+        System.out.println("Enter Y to see saved game states");
+        choice = sc.nextLine();
+
+        if (choice.equals("Y")) {
+            System.out.println("Enter Game No. to view its states");
+            int ch = sc.nextInt();
+            System.out.println(ch);
+            Integer cho = new Integer(ch);
+            //if(newGame.gameState.containsKey(cho)) {
+                ArrayList<Board> states = newGame.gameState.get(cho);
+                for (Board iter : states) {
+                    newGame.showBoard(iter);
+                }
+           // }
         }
     }
 }
