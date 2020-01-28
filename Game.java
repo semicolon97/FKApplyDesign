@@ -336,25 +336,45 @@ public class Game {
             }
         }
 
-        System.out.println("Enter Y to play enhanced Tictactoe");
-        choice = sc.nextLine();
+        ArrayList<Integer> leaderboard = new ArrayList<>();
+        int gameNo = 0;
 
-        int winner;
+        String continuePlaying = "Y";
 
-        if (choice.equals("Y")) {
-            System.out.println("Enter the board size in terms of power of row or column size");
-            int boardSize = sc.nextInt();
+        while(continuePlaying.equals("Y")) {
+            System.out.println("Enter Y to play enhanced Tictactoe");
+            choice = sc.nextLine();
 
-            winner = newGame.playEnhancedGame(listOfPlayers, rowSize, colSize, boardSize);
-            if (winner == -1) {
-                System.out.println("The Game is a draw");
+            int winner;
+
+            if (choice.equals("Y")) {
+                System.out.println("Enter the board size in terms of power of row or column size");
+                int boardSize = sc.nextInt();
+
+                winner = newGame.playEnhancedGame(listOfPlayers, rowSize, colSize, boardSize);
+                if (winner == -1) {
+                    System.out.println("The Game is a draw");
+                }
+                else {
+                    System.out.println("The Winner of the Enhanced TicTacToe is " +winner);
+                }
+                choice = sc.nextLine();
             }
             else {
-                System.out.println("The Winner of the Enhanced TicTacToe is " +winner);
+                winner = newGame.playGame(gameBoard, listOfPlayers, rowSize, colSize );
             }
+
+            leaderboard.add(winner);
+            gameNo = gameNo + 1;
+
+            System.out.println("To Continue Playing Type Y");
+            continuePlaying = sc.nextLine();
         }
-        else {
-            winner = newGame.playGame(gameBoard, listOfPlayers, rowSize, colSize );
+
+        System.out.println("The Leaderboard : ");
+
+        for (int i=0;i<gameNo;i++) {
+            System.out.println("The Winner of Game "+ (i+1)+ " was "+ leaderboard.get(i));
         }
     }
 }
