@@ -23,11 +23,16 @@ public class Game {
         }
     }
 
-    boolean gameOver(Board gameBoard) {
-        return (gameBoard.rowCrossed() || gameBoard.colCrossed() || gameBoard.diagonalCrossed());
+    boolean gameOver(String boardChoice, Board gameBoard) {
+        if (boardChoice.equals("H")) {
+            return  (gameBoard.rowCrossed() || gameBoard.diagonalCrossed());
+        }
+        else {
+            return (gameBoard.rowCrossed() || gameBoard.colCrossed() || gameBoard.diagonalCrossed());
+        }
     }
 
-    int playGame(int gameNo, Board gameBoard, Player[] listOfPlayers, int rowSize, int colSize) {
+    int playGame(String boardChoice, int gameNo, Board gameBoard, Player[] listOfPlayers, int rowSize, int colSize) {
         int noOfValidMoves = rowSize * colSize;
         int noOfMovesdone = 0;
         int whoseTurn = 0;
@@ -36,7 +41,7 @@ public class Game {
         int noOfPlayers = listOfPlayers.length;
         Player whoMoves = listOfPlayers[whoseTurn];
 
-        while(gameOver(gameBoard) == false && noOfMovesdone < noOfValidMoves) {
+        while(gameOver(boardChoice, gameBoard) == false && noOfMovesdone < noOfValidMoves) {
             moveX = whoMoves.rowMove(rowSize);
             moveY = whoMoves.colMove(colSize);
 
@@ -57,7 +62,7 @@ public class Game {
             noOfMovesdone++;
         }
 
-        if (gameOver(gameBoard) == false && noOfMovesdone == noOfValidMoves) {
+        if (gameOver(boardChoice, gameBoard) == false && noOfMovesdone == noOfValidMoves) {
             System.out.println("Game is a draw");
             gameBoard.showBoard();
             return -1;
@@ -76,7 +81,7 @@ public class Game {
 
     }
 
-    int playEnhancedGame(int gameNo, Player[] listOfPlayers, int rowSize, int colSize, int boardSize) {
+    int playEnhancedGame(String boardChoice, int gameNo, Player[] listOfPlayers, int rowSize, int colSize, int boardSize) {
         int tempWinner;
 
         if (boardSize == rowSize) {
@@ -87,7 +92,7 @@ public class Game {
 
             gameBoard.initializeBoard();
 
-            tempWinner = playGame(gameNo, gameBoard, listOfPlayers, rowSize, colSize);
+            tempWinner = playGame(boardChoice, gameNo, gameBoard, listOfPlayers, rowSize, colSize);
 
             return tempWinner;
         }
@@ -99,8 +104,8 @@ public class Game {
 
             for (int row=0;row<rowSize;row++) {
                 for (int col=0;col<colSize;col++) {
-                    enhancedGameBoard.makeMove(playEnhancedGame(gameNo, listOfPlayers, rowSize, colSize, boardSize/rowSize), row, col);
-                    if (gameOver(enhancedGameBoard)) {
+                    enhancedGameBoard.makeMove(playEnhancedGame(boardChoice, gameNo, listOfPlayers, rowSize, colSize, boardSize/rowSize), row, col);
+                    if (gameOver(boardChoice, enhancedGameBoard)) {
                         return enhancedGameBoard.getCell(row, col);
                     }
                 }
@@ -142,7 +147,7 @@ public class Game {
 
         System.out.println("For Each Player, Enter H for human and M for Machine");
         int playerId = 0;
-        String choice;
+        String gameChoice, boardChoice, choice ;
         Human tempHuman;
         Machine tempMachine;
 
@@ -172,16 +177,20 @@ public class Game {
         String continuePlaying = "Y";
 
         while(continuePlaying.equals("Y")) {
+
+            System.out.println("Enter H to play Hexagonal TicTacToe");
+            boardChoice = sc.nextLine();
+
             System.out.println("Enter Y to play enhanced Tictactoe");
-            choice = sc.nextLine();
+            gameChoice = sc.nextLine();
 
             int winner;
 
-            if (choice.equals("Y")) {
+            if (gameChoice.equals("Y")) {
                 System.out.println("Enter the board size in terms of power of row or column size");
                 int boardSize = sc.nextInt();
 
-                winner = newGame.playEnhancedGame(gameNo, listOfPlayers, rowSize, colSize, boardSize);
+                winner = newGame.playEnhancedGame(boardChoice, gameNo, listOfPlayers, rowSize, colSize, boardSize);
                 if (winner == -1) {
                     System.out.println("The Game is a draw");
                 }
@@ -191,7 +200,7 @@ public class Game {
                 choice = sc.nextLine();
             }
             else {
-                winner = newGame.playGame(gameNo, gameBoard, listOfPlayers, rowSize, colSize );
+                winner = newGame.playGame(boardChoice, gameNo, gameBoard, listOfPlayers, rowSize, colSize );
             }
 
             leaderboard.add(winner);
