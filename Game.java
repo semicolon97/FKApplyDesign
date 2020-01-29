@@ -23,16 +23,16 @@ public class Game {
         }
     }
 
-    boolean gameOver(String boardChoice, Board gameBoard) {
+    boolean gameOver(String boardChoice, Board gameBoard, int noOfConnectionsToWin) {
         if (boardChoice.equals("H")) {
-            return  (gameBoard.rowCrossed() || gameBoard.diagonalCrossed());
+            return  (gameBoard.rowCrossed(noOfConnectionsToWin) || gameBoard.diagonalCrossed(noOfConnectionsToWin));
         }
         else {
-            return (gameBoard.rowCrossed() || gameBoard.colCrossed() || gameBoard.diagonalCrossed());
+            return (gameBoard.rowCrossed(noOfConnectionsToWin) || gameBoard.colCrossed() || gameBoard.diagonalCrossed(noOfConnectionsToWin));
         }
     }
 
-    int playGame(String boardChoice, int gameNo, Board gameBoard, Player[] listOfPlayers, int rowSize, int colSize) {
+    int playGame(String boardChoice, int noOfConnectionsToWin, int gameNo, Board gameBoard, Player[] listOfPlayers, int rowSize, int colSize) {
         int noOfValidMoves = rowSize * colSize;
         int noOfMovesdone = 0;
         int whoseTurn = 0;
@@ -41,7 +41,7 @@ public class Game {
         int noOfPlayers = listOfPlayers.length;
         Player whoMoves = listOfPlayers[whoseTurn];
 
-        while(gameOver(boardChoice, gameBoard) == false && noOfMovesdone < noOfValidMoves) {
+        while(gameOver(boardChoice, gameBoard, noOfConnectionsToWin) == false && noOfMovesdone < noOfValidMoves) {
             moveX = whoMoves.rowMove(rowSize);
             moveY = whoMoves.colMove(colSize);
 
@@ -63,7 +63,7 @@ public class Game {
             noOfMovesdone++;
         }
 
-        if (gameOver(boardChoice, gameBoard) == false && noOfMovesdone == noOfValidMoves) {
+        if (gameOver(boardChoice, gameBoard, noOfConnectionsToWin) == false && noOfMovesdone == noOfValidMoves) {
             System.out.println("Game is a draw");
             gameBoard.showBoard();
             return -1;
@@ -82,7 +82,7 @@ public class Game {
 
     }
 
-    int playEnhancedGame(String boardChoice, String irregularChoice, int noOfCellsToBeDestroyed, int gameNo, Player[] listOfPlayers, int rowSize, int colSize, int boardSize) {
+    int playEnhancedGame(String boardChoice, String irregularChoice, int noOfCellsToBeDestroyed, int noOfConnectionstoWin, int gameNo, Player[] listOfPlayers, int rowSize, int colSize, int boardSize) {
         int tempWinner;
 
         if (boardSize == rowSize) {
@@ -97,7 +97,7 @@ public class Game {
                 gameBoard.makeBoardIrregular(noOfCellsToBeDestroyed);
             }
 
-            tempWinner = playGame(boardChoice, gameNo, gameBoard, listOfPlayers, rowSize, colSize);
+            tempWinner = playGame(boardChoice, noOfConnectionstoWin, gameNo, gameBoard, listOfPlayers, rowSize, colSize);
 
             return tempWinner;
         }
@@ -109,8 +109,8 @@ public class Game {
 
             for (int row=0;row<rowSize;row++) {
                 for (int col=0;col<colSize;col++) {
-                    enhancedGameBoard.makeMove(playEnhancedGame(boardChoice, irregularChoice, noOfCellsToBeDestroyed, gameNo, listOfPlayers, rowSize, colSize, boardSize/rowSize), row, col);
-                    if (gameOver(boardChoice, enhancedGameBoard)) {
+                    enhancedGameBoard.makeMove(playEnhancedGame(boardChoice, irregularChoice, noOfCellsToBeDestroyed, noOfConnectionstoWin, gameNo, listOfPlayers, rowSize, colSize, boardSize/rowSize), row, col);
+                    if (gameOver(boardChoice, enhancedGameBoard, noOfConnectionstoWin)) {
                         return enhancedGameBoard.getCell(row, col);
                     }
                 }
@@ -150,11 +150,15 @@ public class Game {
         String irregularChoice = sc.nextLine();
 
         int noOfCellsToBeDestroyed = 0;
+        int noOfConnectionsToWin = rowSize;
 
         if (irregularChoice.equals("I")) {
             System.out.println("Enter no of cells to be destroyed");
             noOfCellsToBeDestroyed = sc.nextInt();
             gameBoard.makeBoardIrregular(noOfCellsToBeDestroyed);
+
+            System.out.println("Enter winning criterion in terms of no on connections");
+            noOfConnectionsToWin = sc.nextInt();
         }
 
         System.out.println("enter number of Players");
@@ -207,7 +211,7 @@ public class Game {
                 System.out.println("Enter the board size in terms of power of row or column size");
                 int boardSize = sc.nextInt();
 
-                winner = newGame.playEnhancedGame(boardChoice, irregularChoice, noOfCellsToBeDestroyed, gameNo, listOfPlayers, rowSize, colSize, boardSize);
+                winner = newGame.playEnhancedGame(boardChoice, irregularChoice, noOfCellsToBeDestroyed, noOfConnectionsToWin, gameNo, listOfPlayers, rowSize, colSize, boardSize);
                 if (winner == -1) {
                     System.out.println("The Game is a draw");
                 }
@@ -217,7 +221,7 @@ public class Game {
                 choice = sc.nextLine();
             }
             else {
-                winner = newGame.playGame(boardChoice, gameNo, gameBoard, listOfPlayers, rowSize, colSize );
+                winner = newGame.playGame(boardChoice, noOfConnectionsToWin, gameNo, gameBoard, listOfPlayers, rowSize, colSize );
             }
 
             leaderboard.add(winner);
