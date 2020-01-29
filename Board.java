@@ -63,11 +63,12 @@ class Board {
         }
     }
 
-    boolean rowCrossed() {
+    boolean rowCrossed(int noOfConnectionsToWin) {
         int initialLoc, flag = 1, count = 0;
 
         for (int i = 0 ; i < row_size ; i++) {
             flag = 1;
+            count = 0;
             initialLoc = getCell(i,0);
             if (initialLoc == empty || initialLoc == destroyed) {
                 flag = 0;
@@ -81,7 +82,7 @@ class Board {
                 }
                 else {
                     count++;
-                    if (count == 6) {
+                    if (count == noOfConnectionsToWin) {
                         flag = 1;
                         break;
                     }
@@ -99,34 +100,6 @@ class Board {
             return false;
         }
     }
-
-//    boolean rowCrossed() {
-//        int initialLoc, flag = 1;
-//        for (int i = 0 ; i < row_size ; i++) {
-//            flag = 1;
-//            initialLoc = getCell(i,0);
-//            if (initialLoc == empty || initialLoc == destroyed) {
-//                flag = 0;
-//                continue;
-//            }
-//            for (int j = 0 ; j < col_size ; j++) {
-//                if (getCell(i,j) != initialLoc) {
-//                    flag = 0;
-//                    break;
-//                }
-//            }
-//            if (flag==1) {
-//                break;
-//            }
-//        }
-//
-//        if (flag == 1) {
-//            return true;
-//        }
-//        else {
-//            return false;
-//        }
-//    }
 
     boolean colCrossed() {
         int initialLoc, flag = 1;
@@ -156,7 +129,7 @@ class Board {
         }
     }
 
-    boolean diagonalCrossed() {
+    boolean diagonalCrossed(int noOfConnectionsToWin) {
         int initialLoc, flag = 1, count = 0;
         initialLoc = getCell(0,0);
         if (initialLoc != empty && initialLoc != destroyed) {
@@ -167,7 +140,7 @@ class Board {
                 }
                 else {
                     count++;
-                    if (count == 6) {
+                    if (count == noOfConnectionsToWin) {
                         flag = 1;
                         break;
                     }
@@ -190,8 +163,9 @@ class Board {
                 }
                 else {
                     count++;
-                    if (count == 6) {
-                        
+                    if (count == noOfConnectionsToWin) {
+                        flag = 1;
+                        break;
                     }
                 }
             }
