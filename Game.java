@@ -57,6 +57,7 @@ public class Game {
             }
 
             setGameState(gameNo, gameBoard);
+
             whoseTurn = (whoseTurn+1)%noOfPlayers;
             whoMoves = listOfPlayers[whoseTurn];
             noOfMovesdone++;
@@ -81,7 +82,7 @@ public class Game {
 
     }
 
-    int playEnhancedGame(String boardChoice, int gameNo, Player[] listOfPlayers, int rowSize, int colSize, int boardSize) {
+    int playEnhancedGame(String boardChoice, String irregularChoice, int noOfCellsToBeDestroyed, int gameNo, Player[] listOfPlayers, int rowSize, int colSize, int boardSize) {
         int tempWinner;
 
         if (boardSize == rowSize) {
@@ -91,6 +92,10 @@ public class Game {
             gameBoard.setCol_size(colSize);
 
             gameBoard.initializeBoard();
+
+            if (irregularChoice.equals("I")) {
+                gameBoard.makeBoardIrregular(noOfCellsToBeDestroyed);
+            }
 
             tempWinner = playGame(boardChoice, gameNo, gameBoard, listOfPlayers, rowSize, colSize);
 
@@ -104,7 +109,7 @@ public class Game {
 
             for (int row=0;row<rowSize;row++) {
                 for (int col=0;col<colSize;col++) {
-                    enhancedGameBoard.makeMove(playEnhancedGame(boardChoice, gameNo, listOfPlayers, rowSize, colSize, boardSize/rowSize), row, col);
+                    enhancedGameBoard.makeMove(playEnhancedGame(boardChoice, irregularChoice, noOfCellsToBeDestroyed, gameNo, listOfPlayers, rowSize, colSize, boardSize/rowSize), row, col);
                     if (gameOver(boardChoice, enhancedGameBoard)) {
                         return enhancedGameBoard.getCell(row, col);
                     }
@@ -139,6 +144,18 @@ public class Game {
         gameBoard.setCol_size(colSize);
 
         gameBoard.initializeBoard();
+
+        System.out.println("Enter I to make the Board irregular");
+        String extra = sc.nextLine();
+        String irregularChoice = sc.nextLine();
+
+        int noOfCellsToBeDestroyed = 0;
+
+        if (irregularChoice.equals("I")) {
+            System.out.println("Enter no of cells to be destroyed");
+            noOfCellsToBeDestroyed = sc.nextInt();
+            gameBoard.makeBoardIrregular(noOfCellsToBeDestroyed);
+        }
 
         System.out.println("enter number of Players");
         int noOfPlayers = sc.nextInt();
@@ -190,7 +207,7 @@ public class Game {
                 System.out.println("Enter the board size in terms of power of row or column size");
                 int boardSize = sc.nextInt();
 
-                winner = newGame.playEnhancedGame(boardChoice, gameNo, listOfPlayers, rowSize, colSize, boardSize);
+                winner = newGame.playEnhancedGame(boardChoice, irregularChoice, noOfCellsToBeDestroyed, gameNo, listOfPlayers, rowSize, colSize, boardSize);
                 if (winner == -1) {
                     System.out.println("The Game is a draw");
                 }
